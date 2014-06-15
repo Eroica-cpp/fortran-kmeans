@@ -35,32 +35,9 @@ program kmeans
 	call points_init(points, points_num, max_keyword_num, len_list)
 	! call centroids_init()
 
+	print *, points(1:len_list(1)+1, 1)
+
 end program kmeans 
-
-subroutine points_init(points, points_num, max_keyword_num, len_list)
-	
-	implicit none
-	integer, intent(in) :: points_num, max_keyword_num
-	integer, intent(inout) :: points(1 + max_keyword_num, points_num)
-	integer, intent(in) :: len_list(points_num)
-	integer :: i
-
-
-	open(unit = 10, file = "./data/id_codeList.txt")
-	do i = 1, points_num
-		
-		read(unit = 10, fmt = *) points(1 : len_list(i) + 1, i)
-		print *, i
-		
-		if (i .eq. 1) then
-			print *, points(1 : len_list(i) + 1, i)
-			close(10)
-			exit
-		end if
-	end do
-	close(10)
-	
-end subroutine points_init
 
 subroutine lenlist_init(len_list, points_num)
 
@@ -73,3 +50,23 @@ subroutine lenlist_init(len_list, points_num)
 	close(11)
 
 end subroutine lenlist_init
+
+subroutine points_init(points, points_num, max_keyword_num, len_list)
+	
+	implicit none
+	integer, intent(in) :: points_num, max_keyword_num
+	integer, intent(inout) :: points(1 + max_keyword_num, points_num)
+	integer, intent(in) :: len_list(points_num)
+	integer :: i
+
+	open(unit = 10, file = "./data/id_codeList.txt")
+	do i = 1, points_num
+		
+		read(unit = 10, fmt = *) points(1 : len_list(i) + 1, i)
+		if (mod(i, 1000) .eq. 0) then
+			print *, "loading page:", i
+		end if	
+	end do
+	close(10)
+	
+end subroutine points_init
