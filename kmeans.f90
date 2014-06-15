@@ -207,6 +207,7 @@ subroutine get_cluster(cluster_ids, points, old_centroid, k, points_num, max_key
 	integer, intent(inout) :: cluster_ids(points_num)
 	integer :: i, counter
 
+	cluster_ids = 0
 	counter = 1
 	do i = 1, points_num
 		if (points(2, i) .eq. old_centroid) then
@@ -240,6 +241,7 @@ integer function get_centroid(cluster_ids, points, points_num, max_keyword_num, 
 			length = length + 1
 		end if		
 	end do
+	print *, "cluster size =", length
 
 	do i = 1, length
 		iden = cluster_ids(i)
@@ -250,15 +252,11 @@ integer function get_centroid(cluster_ids, points, points_num, max_keyword_num, 
 		do j = 1, length
 			iden2 = cluster_ids(j)
 			avg_distance = avg_distance + distance(points(:,iden), points(:, iden2), max_keyword_num, points_num, len_list)
-			print *, "distance(points(:,iden), points(:, iden2), max_keyword_num, points_num, len_list)"
-			print *, distance(points(:,iden), points(:, iden2), max_keyword_num, points_num, len_list)
+			! print *, "distance(points(:,iden), points(:, iden2), max_keyword_num, points_num, len_list)"
+			! print *, distance(points(:,iden), points(:, iden2), max_keyword_num, points_num, len_list)
 		end do
 		avg_distance_list(i) = avg_distance / length
 		! end avg_distance 
-
-		length = length + 1
-		! test code
-		print *, "i =", i, "in function get_centroid()", "avg_distance =", avg_distance
 
 	end do
 
