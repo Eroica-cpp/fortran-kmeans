@@ -116,11 +116,16 @@ subroutine update_lable(centroids, points, k, points_num, max_keyword_num, len_l
 	integer :: feature(2 + max_keyword_num)
 	integer :: i, j, label
 
+	print *, "in function: update_lable()"
+	!!$omp parallel do private(label)
 	do i = 1, points_num
 		! update label
 		feature = points(:, i)
 		label = new_label(feature, centroids, points_num, max_keyword_num, k, len_list)
 		points(2, i) = label
+
+		! atom command
+		!points(2, i) = new_label(points(:, i), centroids, points_num, max_keyword_num, k, len_list)
 		if (mod(i, 1000) .eq. 0) then
 			print *, "i =", i, "label =", label, "loop =", loop, "done!"
 		end if
@@ -162,6 +167,7 @@ real(kind = 4) function distance(feature, feature2, max_keyword_num, points_num,
 
 	sum = 0
 	! feature(1) is id
+	!!$omp parallel do private(i) reduction(+:sum)
 	do i = 1, len_list(feature(1))
 		if ( any(feature(2+i) == feature2(3 : len_list(feature2(1)))) ) then
 			sum = sum + 1
@@ -254,11 +260,12 @@ integer function get_centroid(cluster_ids, points, points_num, max_keyword_num, 
 		! begin avg_distance 
 		! calculate average distance of a single point
 		avg_distance = 0.0
+		!!$omp parallel do private(iden2) reduction(+:avg_distance)
 		do j = 1, length
 			iden2 = cluster_ids(j)
 			avg_distance = avg_distance + distance(points(:,iden), points(:, iden2), max_keyword_num, points_num, len_list)
 			! print *, "distance(points(:,iden), points(:, iden2), max_keyword_num, points_num, len_list)"
-			! print *, distance(points(:,iden), points(:, iden2), max_keyword_num, points_num, len_list)
+			print *, distance(points(:,iden), points(:, iden2), max_keyword_num, points_num, len_list)
 		end do
 		avg_distance_list(i) = avg_distance / length
 		! end avg_distance 
