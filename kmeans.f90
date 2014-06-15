@@ -4,21 +4,26 @@
 ! Homepage: https://github.com/Eroica-cpp
 !
 ! Pseudocode:
-!***********************************!
-! var centroid_list					!
-! var points						!
-! 									!
-! points.init()						!
-! centroid_list.init()				!
-!									!
-! while(terminate condition){		!
-! 									!
-! 	for point in points {			!
-! 		point.update_lable()		!
-! 	}								!
-! 	centroid_list.update()			!
-! }									!
-!***********************************!
+!***********************************
+! var centroid_list					
+! var points						
+! 								
+! points.init()						
+! centroid_list.init()				
+!								
+! while(terminate condition){		
+! 									
+! 	for point in points {			
+! 		point.update_lable()		
+! 	}								
+! 	centroid_list.update()			
+! }									
+!***********************************
+!
+! Description of Variables:
+! @points, (id, label, keyword_list)
+! @centroids, (id, label, keyword_list)
+!
 
 program kmeans
 
@@ -29,8 +34,8 @@ program kmeans
 	integer :: i
 
 	allocate(len_list(points_num))
-	allocate(points(1 + max_keyword_num, points_num))
-	allocate(centroids(1 + max_keyword_num, k))
+	allocate(points(2 + max_keyword_num, points_num))
+	allocate(centroids(2 + max_keyword_num, k))
 
 	call lenlist_init(len_list, points_num)
 	call points_init(points, points_num, max_keyword_num, len_list)
@@ -54,14 +59,14 @@ subroutine points_init(points, points_num, max_keyword_num, len_list)
 	
 	implicit none
 	integer, intent(in) :: points_num, max_keyword_num
-	integer, intent(inout) :: points(1 + max_keyword_num, points_num)
+	integer, intent(inout) :: points(2 + max_keyword_num, points_num)
 	integer, intent(in) :: len_list(points_num)
 	integer :: i
 
 	open(unit = 10, file = "./data/id_codeList.txt")
 	do i = 1, points_num
 		
-		read(unit = 10, fmt = *) points(1 : len_list(i) + 1, i)
+		read(unit = 10, fmt = *) points(1 : len_list(i) + 2, i)
 		if (mod(i, 1000) .eq. 0) then
 			print *, "loading page:", i
 		end if	
@@ -74,8 +79,8 @@ subroutine centroids_init(centroids, points, k, points_num, max_keyword_num, len
 	
 	implicit none
 	integer, intent(in) :: k, points_num, max_keyword_num
-	integer, intent(inout) :: centroids(1 + max_keyword_num, k)
-	integer, intent(in) :: points(1 + max_keyword_num, points_num)
+	integer, intent(inout) :: centroids(2 + max_keyword_num, k)
+	integer, intent(in) :: points(2 + max_keyword_num, points_num)
 	integer, intent(in) :: len_list(points_num)
 	integer :: i, step
 

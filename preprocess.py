@@ -21,7 +21,7 @@ def get_id_codeList():
 		for key in key_word_list:
 			word_code_list.append(word2code[key])
 		word_code_list.sort()
-		f.write(str(code) + "\t" + "\t".join([str(i) for i in word_code_list]) + "\n")
+		f.write(str(code) + "\t" + "\t".join(["0"] + [str(i) for i in word_code_list]) + "\n")
 		len_list.append(str(len(word_code_list)))
 		print "code:", code, "done!"
 	f2 = open("./data/len.txt", "w")
