@@ -29,9 +29,10 @@ program kmeans
 
 	implicit none
 	integer, parameter :: k = 100, points_num = 69568, max_keyword_num = 500
+	integer, parameter :: max_iter = 100
 	integer, dimension(:), allocatable :: len_list
 	integer, dimension(:, :), allocatable :: points, centroids
-	integer :: i
+	integer :: i, loop = 1
 
 	allocate(len_list(points_num))
 	allocate(points(2 + max_keyword_num, points_num))
@@ -40,6 +41,12 @@ program kmeans
 	call lenlist_init(len_list, points_num)
 	call points_init(points, points_num, max_keyword_num, len_list)
 	call centroids_init(centroids, points, k, points_num, max_keyword_num, len_list)
+
+	do while(loop <= max_iter)
+		print *, loop
+		loop = loop + 1
+		call update_lable(centroids, points, k, points_num, max_keyword_num, len_list)
+	end do
 
 end program kmeans 
 
@@ -90,3 +97,34 @@ subroutine centroids_init(centroids, points, k, points_num, max_keyword_num, len
 	end do
 
 end subroutine centroids_init
+
+subroutine update_lable(centroids, points, k, points_num, max_keyword_num, len_list)
+
+	implicit none
+	integer, intent(in) :: k, points_num, max_keyword_num
+	integer, intent(in) :: centroids(2 + max_keyword_num, k)
+	integer, intent(inout) :: points(2 + max_keyword_num, points_num)
+	integer, intent(in) :: len_list(points_num)
+	integer, external :: new_label
+	integer :: feature(2 + max_keyword_num)
+	integer :: i, j
+
+	do i = 1, points_num
+		! update label
+		feature = points(:, i)
+		points(2, i) = new_label(feature, centroids, points_num, max_keyword_num, k, len_list)
+	end do
+
+end subroutine update_lable
+
+integer function new_label(feature, centroids, points_num, max_keyword_num, k, len_list)
+	
+	implicit none
+	integer, intent(in) :: k, points_num, max_keyword_num
+	integer, intent(in) :: centroids(2 + max_keyword_num, k)
+	integer, intent(in) :: len_list(points_num)
+	integer, intent(in) :: feature(2 + max_keyword_num)
+
+	new_label = 1
+
+end function new_label
