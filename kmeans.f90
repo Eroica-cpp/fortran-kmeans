@@ -46,7 +46,7 @@ program kmeans
 	do while(loop <= max_iter)
 		print *, loop
 		call update_lable(centroids, points, k, points_num, max_keyword_num, len_list, loop)
-		!call update_centroid(centroids, points, k, points_num, max_keyword_num, len_list, loop)
+		call update_centroid(centroids, points, k, points_num, max_keyword_num, len_list, loop)
 		loop = loop + 1
 	end do
 
@@ -153,6 +153,7 @@ real(kind = 4) function distance(feature, feature2, max_keyword_num, points_num,
 	integer, intent(in) :: feature2(2 + max_keyword_num)
 	integer, intent(in) :: len_list(points_num)
 	integer :: i, sum
+	real(kind = 4) :: denominator
 
 	sum = 0
 	! feature(1) is id
@@ -162,7 +163,13 @@ real(kind = 4) function distance(feature, feature2, max_keyword_num, points_num,
 		end if
 	end do
 
-	distance = 1.0 - float(sum) / sqrt(float(len_list(feature(1)) * len_list(feature2(1))))
+	denominator = sqrt(float(len_list(feature(1)) * len_list(feature2(1))))
+	if (denominator /= 0.0) then
+		distance = 1.0 - float(sum) / denominator
+	else
+		distance = 1.0
+	end if
+
 
 end function distance
 
