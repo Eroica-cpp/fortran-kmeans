@@ -28,12 +28,12 @@
 program kmeans
 
 	implicit none
+	! points_num = 69568
 	integer, parameter :: k = 100, points_num = 69568, max_keyword_num = 500
 	integer, parameter :: max_iter = 100
 	integer, dimension(:), allocatable :: len_list
 	integer, dimension(:, :), allocatable :: points, centroids
 	integer :: i, loop = 1
-	integer, dimension(4) :: test = (/1,12,3,4/)
 
 	allocate(len_list(points_num))
 	allocate(points(2 + max_keyword_num, points_num))
@@ -49,6 +49,11 @@ program kmeans
 		call update_centroid(centroids, points, k, points_num, max_keyword_num, len_list, loop)
 		loop = loop + 1
 	end do
+
+	! save centroids
+	open(unit = 12, file = "./data/centroids.txt")
+	write(unit = 12, fmt = *) centroids(1, :)
+	close(12)
 
 end program kmeans 
 

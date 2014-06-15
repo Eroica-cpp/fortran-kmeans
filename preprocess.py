@@ -14,7 +14,7 @@ def get_id_codeList():
 
 	f = open("./data/id_codeList.txt", "w")
 	len_list = []
-	for (iden, code) in id2code_dict.items():
+	for (iden, code) in id2code_dict.items(): # sorted(id2code_dict.items(), key = lambda x: x[0])[:10000]:
 		key_word_list = key_word_dict[iden]
 		key_word_list = key_word_dict[iden]
 		word_code_list = []
