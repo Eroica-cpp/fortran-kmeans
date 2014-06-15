@@ -13,6 +13,7 @@ def get_id_codeList():
 	id2code_dict = cPickle.load(open("./data/id2code_dict.pickle"))
 
 	f = open("./data/id_codeList.txt", "w")
+	len_list = []
 	for (iden, code) in id2code_dict.items():
 		key_word_list = key_word_dict[iden]
 		key_word_list = key_word_dict[iden]
@@ -21,9 +22,14 @@ def get_id_codeList():
 			word_code_list.append(word2code[key])
 		word_code_list.sort()
 		f.write(str(code) + "\t" + "\t".join([str(i) for i in word_code_list]) + "\n")
+		len_list.append(str(len(word_code_list)))
 		print "code:", code, "done!"
-
+	f2 = open("./data/len.txt", "w")
+	f2.write("\t".join(len_list))
+	f2.close()
 	f.close()
+
+
 
 def id2code():
 	"""
