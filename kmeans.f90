@@ -26,6 +26,7 @@ program kmeans
 	integer, parameter :: k = 100, points_num = 69568, max_keyword_num = 500
 	integer, dimension(:), allocatable :: len_list
 	integer, dimension(:, :), allocatable :: points, centroids
+	integer :: i
 
 	allocate(len_list(points_num))
 	allocate(points(1 + max_keyword_num, points_num))
@@ -33,9 +34,7 @@ program kmeans
 
 	call lenlist_init(len_list, points_num)
 	call points_init(points, points_num, max_keyword_num, len_list)
-	! call centroids_init()
-
-	print *, points(1:len_list(1)+1, 1)
+	call centroids_init(centroids, points, k, points_num, max_keyword_num, len_list)
 
 end program kmeans 
 
@@ -70,3 +69,19 @@ subroutine points_init(points, points_num, max_keyword_num, len_list)
 	close(10)
 	
 end subroutine points_init
+
+subroutine centroids_init(centroids, points, k, points_num, max_keyword_num, len_list)
+	
+	implicit none
+	integer, intent(in) :: k, points_num, max_keyword_num
+	integer, intent(inout) :: centroids(1 + max_keyword_num, k)
+	integer, intent(in) :: points(1 + max_keyword_num, points_num)
+	integer, intent(in) :: len_list(points_num)
+	integer :: i, step
+
+	step = points_num / k
+	do i = 1, k
+		centroids(:, i) = points(:, 1 + (i-1) * step)
+	end do
+
+end subroutine centroids_init
