@@ -33,6 +33,7 @@ program kmeans
 	integer, dimension(:), allocatable :: len_list
 	integer, dimension(:, :), allocatable :: points, centroids
 	integer :: i, loop = 1
+	integer, dimension(4) :: test = (/1,12,3,4/)
 
 	allocate(len_list(points_num))
 	allocate(points(2 + max_keyword_num, points_num))
@@ -44,8 +45,8 @@ program kmeans
 
 	do while(loop <= max_iter)
 		print *, loop
+		call update_lable(centroids, points, k, points_num, max_keyword_num, len_list, loop)
 		loop = loop + 1
-		call update_lable(centroids, points, k, points_num, max_keyword_num, len_list)
 	end do
 
 end program kmeans 
@@ -98,21 +99,25 @@ subroutine centroids_init(centroids, points, k, points_num, max_keyword_num, len
 
 end subroutine centroids_init
 
-subroutine update_lable(centroids, points, k, points_num, max_keyword_num, len_list)
+subroutine update_lable(centroids, points, k, points_num, max_keyword_num, len_list, loop)
 
 	implicit none
-	integer, intent(in) :: k, points_num, max_keyword_num
+	integer, intent(in) :: k, points_num, max_keyword_num, loop
 	integer, intent(in) :: centroids(2 + max_keyword_num, k)
 	integer, intent(inout) :: points(2 + max_keyword_num, points_num)
 	integer, intent(in) :: len_list(points_num)
 	integer, external :: new_label
 	integer :: feature(2 + max_keyword_num)
-	integer :: i, j
+	integer :: i, j, label
 
 	do i = 1, points_num
 		! update label
 		feature = points(:, i)
-		points(2, i) = new_label(feature, centroids, points_num, max_keyword_num, k, len_list)
+		label = new_label(feature, centroids, points_num, max_keyword_num, k, len_list)
+		points(2, i) = label
+		if (mod(1, 1) .eq. 0) then
+			print *, "i =", i, "label =", label, "loop =", loop, "done!"
+		end if
 	end do
 
 end subroutine update_lable
@@ -124,7 +129,37 @@ integer function new_label(feature, centroids, points_num, max_keyword_num, k, l
 	integer, intent(in) :: centroids(2 + max_keyword_num, k)
 	integer, intent(in) :: len_list(points_num)
 	integer, intent(in) :: feature(2 + max_keyword_num)
+	real(kind = 4), external :: distance
+	integer :: feature2(2 + max_keyword_num)
+	real(kind = 4) :: distance_list(k)
+	integer j
 
-	new_label = 1
+	do j = 1, k
+		feature2 = centroids(:, j)
+		distance_list(j) = distance(feature, feature2, max_keyword_num, points_num, len_list)
+	end do 
+
+	! use controids' id to represent the whole cluster
+	new_label = centroids(1, maxloc(distance_list, 1))
 
 end function new_label
+
+real(kind = 4) function distance(feature, feature2, max_keyword_num, points_num, len_list)
+
+	implicit none
+	integer, intent(in) :: points_num, max_keyword_num
+	integer, intent(in) :: feature(2 + max_keyword_num)
+	integer, intent(in) :: feature2(2 + max_keyword_num)
+	integer, intent(in) :: len_list(points_num)
+	integer :: i, sum
+
+	! feature(1) is id
+	do i = 1, len_list(feature(1))
+		if ( any(feature(2+i) == feature2(3 : len_list(feature2(1)))) ) then
+			sum = sum + 1
+		end if
+	end do
+
+	distance = float(sum) / (len_list(feature(1)) * len_list(feature2(1)))
+
+end function distance
