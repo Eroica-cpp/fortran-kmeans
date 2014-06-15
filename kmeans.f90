@@ -162,7 +162,7 @@ real(kind = 4) function distance(feature, feature2, max_keyword_num, points_num,
 		end if
 	end do
 
-	distance = 1.0 - float(sum) / (len_list(feature(1)) * len_list(feature2(1)))
+	distance = 1.0 - float(sum) / sqrt(float(len_list(feature(1)) * len_list(feature2(1))))
 
 end function distance
 
