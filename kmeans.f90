@@ -45,7 +45,7 @@ program kmeans
 
 	do while(loop <= max_iter)
 		print *, loop
-		call update_lable(centroids, points, k, points_num, max_keyword_num, len_list, loop)
+		!call update_lable(centroids, points, k, points_num, max_keyword_num, len_list, loop)
 		call update_centroid(centroids, points, k, points_num, max_keyword_num, len_list, loop)
 		loop = loop + 1
 	end do
@@ -172,14 +172,39 @@ subroutine update_centroid(centroids, points, k, points_num, max_keyword_num, le
 	integer, intent(inout) :: centroids(2 + max_keyword_num, k)
 	integer, intent(in) :: points(2 + max_keyword_num, points_num)
 	integer, intent(in) :: len_list(points_num)
-	integer :: cluster(2 + max_keyword_num, points_num)
+	integer :: cluster_ids(points_num)
 	integer :: old_centroid_list(k)
-	integer :: i
+	integer :: i, old_centroid, new_centroid
 	
 	old_centroid_list = centroids(1, :)
 	
 	do i = 1, k
-		
+		cluster_ids = 0
+		old_centroid = old_centroid_list(i)
+		call get_cluster(cluster_ids, points, old_centroid, k, points_num, max_keyword_num, len_list, loop)
+		!new_centroid = get_centroid()
+		!centroids(:, k) = points(:, new_centroid)
 	end do
 
 end subroutine update_centroid
+
+subroutine get_cluster(cluster_ids, points, old_centroid, k, points_num, max_keyword_num, len_list, loop)
+
+	implicit none
+	integer, intent(in) :: k, points_num, max_keyword_num, loop, old_centroid
+	integer, intent(in) :: centroids(2 + max_keyword_num, k)
+	integer, intent(in) :: points(2 + max_keyword_num, points_num)
+	integer, intent(in) :: len_list(points_num)
+	integer, intent(inout) :: cluster_ids(points_num)
+	integer :: i, counter
+
+	counter = 1
+	do i = 1, points_num
+		if (points(2, i) .eq. old_centroid) then
+			cluster_ids(counter) = i
+			counter += 1
+		end if
+	end do
+
+
+end subroutine get_cluster
