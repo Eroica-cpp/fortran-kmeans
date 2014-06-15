@@ -183,7 +183,7 @@ subroutine update_centroid(centroids, points, k, points_num, max_keyword_num, le
 		cluster_ids = 0
 		old_centroid = old_centroid_list(i)
 		call get_cluster(cluster_ids, points, old_centroid, k, points_num, max_keyword_num, len_list, loop)
-		new_centroid = get_centroid(cluster_ids, points, points_num, max_keyword_num, loop)
+		new_centroid = get_centroid(cluster_ids, points, points_num, max_keyword_num, loop, len_list)
 		centroids(:, i) = points(:, new_centroid)
 		print *, "cluster:", i, "has updated centroid!"
 	end do
@@ -209,14 +209,42 @@ subroutine get_cluster(cluster_ids, points, old_centroid, k, points_num, max_key
 
 end subroutine get_cluster
 
-integer function get_centroid(cluster_ids, points, points_num, max_keyword_num, loop)
+integer function get_centroid(cluster_ids, points, points_num, max_keyword_num, loop, len_list)
 
 	implicit none
 	integer, intent(in) :: points_num, max_keyword_num, loop
 	integer, intent(in) :: cluster_ids(points_num)
+	integer, intent(in) :: len_list(points_num)
 	integer, intent(in) :: points(2 + max_keyword_num, points_num)
+	real(kind = 4), external :: distance
+	real(kind = 4) :: avg_distance_list(points_num)
+	real(kind = 4) :: avg_distance
+	integer :: i, j, loc, iden, iden2
 
+	avg_distance_list = 0.0
 
-	get_centroid = 1
+	do i = 1, points_num
+		iden = cluster_ids(i)
+		if (iden .eq. 0) then
+			exit
+		end if
+
+		! begin avg_distance 
+		! calculate average distance of a single point
+		avg_distance = 0.0
+		do j = 1, points_num
+			iden2 = cluster_ids(i)
+			if (iden2 .eq. 0) then
+				exit
+			end if
+			avg_distance = avg_distance + distance(points(:,iden), points(:, iden2), max_keyword_num, points_num, len_list)
+		end do
+		avg_distance_list(i) = avg_distance / j
+		! end avg_distance 
+
+	end do
+
+	loc = minloc(avg_distance_list, 1)
+	get_centroid = cluster_ids(loc)
 
 end function get_centroid
