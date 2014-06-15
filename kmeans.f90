@@ -1,6 +1,6 @@
 ! k-means algorithm
 ! Author: Tao Li
-! email: eroicacmcs@163.com
+! email: eroicacmcs@gmail.com
 !
 ! Pseudocode:
 !***********************************!
@@ -17,21 +17,15 @@
 ! 	}								!
 ! 	centroid_list.update()			!
 ! }									!
-!***********************************
+!***********************************!
 
 program kmeans
 
 	implicit none
+	integer, parameter :: k = 100, max_keyword_num = 500
+	integer, dimension(:, :), allocatable :: centroids
 
-	centroid_list
-	points
+	allocate(centroids(k, 1 + max_keyword_num))
 
-	centroid_list.init()
-
-	for point in points
-		point.getlable
-
-		if (..):
-			terminate
 
 end program kmeans 
