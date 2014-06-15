@@ -15,8 +15,9 @@ def get_id_codeList():
 	for (iden, key_word_list) in key_word_dict.items():
 		code_list = []
 		for key in key_word_list:
-			code_list.append(str(word2code[key]))
-		f.write(str(iden) + "\t" + "\t".join(code_list) + "\n")
+			code_list.append(word2code[key])
+		code_list.sort()
+		f.write(str(iden) + "\t" + "\t".join([str(i) for i in code_list]) + "\n")
 		print "iden:", iden, "done!"
 
 	f.close()
