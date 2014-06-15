@@ -172,6 +172,7 @@ subroutine update_centroid(centroids, points, k, points_num, max_keyword_num, le
 	integer, intent(inout) :: centroids(2 + max_keyword_num, k)
 	integer, intent(in) :: points(2 + max_keyword_num, points_num)
 	integer, intent(in) :: len_list(points_num)
+	integer, external :: get_centroid
 	integer :: cluster_ids(points_num)
 	integer :: old_centroid_list(k)
 	integer :: i, old_centroid, new_centroid
@@ -182,8 +183,8 @@ subroutine update_centroid(centroids, points, k, points_num, max_keyword_num, le
 		cluster_ids = 0
 		old_centroid = old_centroid_list(i)
 		call get_cluster(cluster_ids, points, old_centroid, k, points_num, max_keyword_num, len_list, loop)
-		!new_centroid = get_centroid()
-		!centroids(:, k) = points(:, new_centroid)
+		new_centroid = get_centroid(cluster_ids, points, points_num, max_keyword_num, loop)
+		centroids(:, i) = points(:, new_centroid)
 		print *, "cluster:", i, "has updated centroid!"
 	end do
 
@@ -207,3 +208,15 @@ subroutine get_cluster(cluster_ids, points, old_centroid, k, points_num, max_key
 	end do
 
 end subroutine get_cluster
+
+integer function get_centroid(cluster_ids, points, points_num, max_keyword_num, loop)
+
+	implicit none
+	integer, intent(in) :: points_num, max_keyword_num, loop
+	integer, intent(in) :: cluster_ids(points_num)
+	integer, intent(in) :: points(2 + max_keyword_num, points_num)
+
+
+	get_centroid = 1
+
+end function get_centroid
