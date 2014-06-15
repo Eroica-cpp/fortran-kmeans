@@ -45,7 +45,7 @@ program kmeans
 
 	do while(loop <= max_iter)
 		print *, loop
-		!call update_lable(centroids, points, k, points_num, max_keyword_num, len_list, loop)
+		call update_lable(centroids, points, k, points_num, max_keyword_num, len_list, loop)
 		call update_centroid(centroids, points, k, points_num, max_keyword_num, len_list, loop)
 		loop = loop + 1
 	end do
@@ -141,7 +141,7 @@ integer function new_label(feature, centroids, points_num, max_keyword_num, k, l
 	end do 
 
 	! use controids' id to represent the whole cluster
-	new_label = centroids(1, maxloc(distance_list, 1))
+	new_label = centroids(1, minloc(distance_list, 1))
 
 end function new_label
 
@@ -161,7 +161,7 @@ real(kind = 4) function distance(feature, feature2, max_keyword_num, points_num,
 		end if
 	end do
 
-	distance = float(sum) / (len_list(feature(1)) * len_list(feature2(1)))
+	distance = 1 - float(sum) / (len_list(feature(1)) * len_list(feature2(1)))
 
 end function distance
 
