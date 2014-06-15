@@ -46,7 +46,7 @@ program kmeans
 	do while(loop <= max_iter)
 		print *, loop
 		call update_lable(centroids, points, k, points_num, max_keyword_num, len_list, loop)
-		call update_centroid(centroids, points, k, points_num, max_keyword_num, len_list, loop)
+		!call update_centroid(centroids, points, k, points_num, max_keyword_num, len_list, loop)
 		loop = loop + 1
 	end do
 
@@ -154,6 +154,7 @@ real(kind = 4) function distance(feature, feature2, max_keyword_num, points_num,
 	integer, intent(in) :: len_list(points_num)
 	integer :: i, sum
 
+	sum = 0
 	! feature(1) is id
 	do i = 1, len_list(feature(1))
 		if ( any(feature(2+i) == feature2(3 : len_list(feature2(1)))) ) then
@@ -161,7 +162,7 @@ real(kind = 4) function distance(feature, feature2, max_keyword_num, points_num,
 		end if
 	end do
 
-	distance = 1 - float(sum) / (len_list(feature(1)) * len_list(feature2(1)))
+	distance = 1.0 - float(sum) / (len_list(feature(1)) * len_list(feature2(1)))
 
 end function distance
 
@@ -219,32 +220,42 @@ integer function get_centroid(cluster_ids, points, points_num, max_keyword_num, 
 	real(kind = 4), external :: distance
 	real(kind = 4) :: avg_distance_list(points_num)
 	real(kind = 4) :: avg_distance
-	integer :: i, j, loc, iden, iden2
+	integer :: i, j, loc, iden, iden2, length
 
 	avg_distance_list = 0.0
+	length = 0
 
+	! calculate length
 	do i = 1, points_num
-		iden = cluster_ids(i)
-		if (iden .eq. 0) then
+		if (cluster_ids(i) .eq. 0) then
 			exit
-		end if
+		else
+			length = length + 1
+		end if		
+	end do
+
+	do i = 1, length
+		iden = cluster_ids(i)
 
 		! begin avg_distance 
 		! calculate average distance of a single point
 		avg_distance = 0.0
-		do j = 1, points_num
-			iden2 = cluster_ids(i)
-			if (iden2 .eq. 0) then
-				exit
-			end if
+		do j = 1, length
+			iden2 = cluster_ids(j)
 			avg_distance = avg_distance + distance(points(:,iden), points(:, iden2), max_keyword_num, points_num, len_list)
+			print *, "distance(points(:,iden), points(:, iden2), max_keyword_num, points_num, len_list)"
+			print *, distance(points(:,iden), points(:, iden2), max_keyword_num, points_num, len_list)
 		end do
-		avg_distance_list(i) = avg_distance / j
+		avg_distance_list(i) = avg_distance / length
 		! end avg_distance 
+
+		length = length + 1
+		! test code
+		print *, "i =", i, "in function get_centroid()", "avg_distance =", avg_distance
 
 	end do
 
-	loc = minloc(avg_distance_list, 1)
+	loc = minloc(avg_distance_list(1:length), 1)
 	get_centroid = cluster_ids(loc)
 
 end function get_centroid
