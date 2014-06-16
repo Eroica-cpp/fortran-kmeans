@@ -33,6 +33,7 @@ program kmeans
 	integer, parameter :: max_iter = 100
 	integer, dimension(:), allocatable :: len_list
 	integer, dimension(:, :), allocatable :: points, centroids
+	character(len = 4) :: tmp_str
 	integer :: i, loop = 1
 
 	allocate(len_list(points_num))
@@ -47,11 +48,18 @@ program kmeans
 		print *, loop
 		call update_lable(centroids, points, k, points_num, max_keyword_num, len_list, loop)
 		call update_centroid(centroids, points, k, points_num, max_keyword_num, len_list, loop)
+		
+		! save centroids into disk
+		write(tmp_str,"(i4.4)") loop
+		open(unit = 12, file = "./data/centroids" // tmp_str // ".txt")
+		write(unit = 12, fmt = *) centroids(1, :)
+		close(12)
+
 		loop = loop + 1
 	end do
 
-	! save centroids
-	open(unit = 12, file = "./data/centroids.txt")
+	! save final centroids
+	open(unit = 12, file = "./data/centroids_final.txt")
 	write(unit = 12, fmt = *) centroids(1, :)
 	close(12)
 
