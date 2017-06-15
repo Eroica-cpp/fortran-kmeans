@@ -5,7 +5,7 @@ A Fortran library of K-means algorithm written in Fortran 90. Parallel computing
 Prerequisite
 ----
 * [GCC (version >= 2.7.0)](https://gcc.gnu.org/releases.html)
-* A table contains (page id, key word list) pairs.
+* Data files in `./data` folder with format: <*page_id*, *key_word_list*> pairs stored in plain text , separated by line. (see  [preprocess.py](https://github.com/Eroica-cpp/fortran-kmeans/blob/master/preprocess.py))
 
 Algorithm
 ----
@@ -27,7 +27,16 @@ while(terminate condition){
 
 Usage
 ----
+```Bash
+# (optional) preprocess raw data files in ./data folder
+python preprocess.py
 
+# compile
+gfortran kmeans.f90
+
+# run
+./a.out
+```
 
 License
 ----
