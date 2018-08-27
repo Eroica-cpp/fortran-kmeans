@@ -25,6 +25,16 @@ while(terminate condition){
 }
 ```
 
+Install
+----
+```Bash
+# change to your desired directory
+cd <directory_path>
+
+# clone source code to local disk
+git clone git@github.com:Eroica-cpp/fortran-kmeans.git
+```
+
 Usage
 ----
 ```Bash
@@ -37,6 +47,18 @@ gfortran kmeans.f90
 # run
 ./a.out
 ```
+
+Citation
+----
+@article{li2013fortran,
+  author = {Li, Tao},
+  title = {fortran-kmeans: a Fortran Library for K-Means Algorithm},
+  year = {2013},
+  publisher = {GitHub},
+  journal = {GitHub Repository},
+  url = {https://github.com/Eroica-cpp/fortran-kmeans},
+  doi = {10.13140/RG.2.2.13401.36963}
+}
 
 License
 ----
