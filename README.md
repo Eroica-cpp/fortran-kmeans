@@ -50,6 +50,7 @@ gfortran kmeans.f90
 
 Citation
 ----
+```LaTeX
 @article{li2013fortran,
   author = {Li, Tao},
   title = {fortran-kmeans: a Fortran Library for K-Means Algorithm},
@@ -59,6 +60,7 @@ Citation
   url = {https://github.com/Eroica-cpp/fortran-kmeans},
   doi = {10.13140/RG.2.2.13401.36963}
 }
+```
 
 License
 ----
