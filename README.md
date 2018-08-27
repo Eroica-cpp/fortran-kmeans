@@ -58,7 +58,7 @@ Citation
   publisher = {GitHub},
   journal = {GitHub Repository},
   url = {https://github.com/Eroica-cpp/fortran-kmeans},
-  doi = {10.13140/RG.2.2.13401.36963}
+  doi = {10.13140/RG.2.2.21789.97760}
 }
 ```
 
