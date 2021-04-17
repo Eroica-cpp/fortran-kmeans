@@ -1,6 +1,5 @@
 ! k-means algorithm
 ! Author: Tao Li
-! email: eroicacmcs@gmail.com
 ! Homepage: https://github.com/Eroica-cpp
 !
 ! Pseudocode:
